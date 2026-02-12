@@ -12,3 +12,6 @@ dump.xml
 # OS files
 .DS_Store
 Thumbs.db
+
+# Astah files
+*.asta.lock
