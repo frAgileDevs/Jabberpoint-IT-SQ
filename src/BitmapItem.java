@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
 import java.io.IOException;
 
 
-/** <p>De klasse voor een Bitmap item</p>
+/** <p>The class for a Bitmap item</p>
  * <p>Bitmap items have the responsibility to draw themselves.</p>
  * @author Ian F. Darwin, ian@darwinsys.com, Gert Florijn, Sylvia Stuurman
  * @version 1.1 2002/12/17 Gert Florijn

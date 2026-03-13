@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.ArrayList;
 
-/** <p>A tekst item.</p>
+/** <p>A text item.</p>
  * <p>A TextItem has drawingfunctionality.</p>
  * @author Ian F. Darwin, ian@darwinsys.com, Gert Florijn, Sylvia Stuurman
  * @version 1.1 2002/12/17 Gert Florijn
@@ -45,7 +45,7 @@ public class TextItem extends SlideItem {
 		return text == null ? "" : text;
 	}
 
-// geef de AttributedString voor het item
+// return the AttributedString for the item
 	public AttributedString getAttributedString(Style style, float scale) {
 		AttributedString attrStr = new AttributedString(getText());
 		attrStr.addAttribute(TextAttribute.FONT, style.getFont(scale), 0, text.length());
