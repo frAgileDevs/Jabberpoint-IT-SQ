@@ -6,6 +6,12 @@
 *.class
 bin/
 
+# Runtime generated files
+dump.xml
+
 # OS files
 .DS_Store
 Thumbs.db
+
+# Astah files
+*.asta.lock
