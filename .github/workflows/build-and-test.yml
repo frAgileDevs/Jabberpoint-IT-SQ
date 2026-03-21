@@ -21,11 +21,12 @@ jobs:
     - name: Compile Java source files
       run: |
         mkdir -p bin
-        javac -d bin src/*.java
+        find src -name "*.java" > sources.txt
+        javac -d bin @sources.txt
         
     - name: Verify compilation
       run: |
-        CLASS_COUNT=$(ls -1 bin/*.class 2>/dev/null | wc -l)
+        CLASS_COUNT=$(find bin -name "*.class" | wc -l)
         if [ "$CLASS_COUNT" -gt 0 ]; then
         echo "Compilation successful! $CLASS_COUNT class files created"
         else
@@ -37,14 +38,24 @@ jobs:
     - name: Test with demo presentation
       run: |
         echo "Testing application launch with demo mode..."
-        timeout 5s java -cp bin JabberPoint || true
+        if [ -f bin/com/nhlstenden/jabberpoint/JabberPoint.class ]; then
+          MAIN_CLASS=com.nhlstenden.jabberpoint.JabberPoint
+        else
+          MAIN_CLASS=JabberPoint
+        fi
+        timeout 5s java -cp bin "$MAIN_CLASS" || true
         echo "Application can be launched"
         
     - name: Test with XML file
       run: |
         echo "Testing application launch with test.xml..."
         if [ -f test.xml ]; then
-          timeout 5s java -cp bin JabberPoint test.xml || true
+          if [ -f bin/com/nhlstenden/jabberpoint/JabberPoint.class ]; then
+            MAIN_CLASS=com.nhlstenden.jabberpoint.JabberPoint
+          else
+            MAIN_CLASS=JabberPoint
+          fi
+          timeout 5s java -cp bin "$MAIN_CLASS" test.xml || true
           echo "XML loading test completed"
         else
           echo "test.xml not found, skipping XML test"
@@ -55,5 +66,5 @@ jobs:
       run: |
         echo "## Build Summary" >> $GITHUB_STEP_SUMMARY
         echo "- Java files compiled: " >> $GITHUB_STEP_SUMMARY
-        echo "- Class files generated: $(ls -1 bin/*.class 2>/dev/null | wc -l)" >> $GITHUB_STEP_SUMMARY
+        echo "- Class files generated: $(find bin -name \"*.class\" | wc -l)" >> $GITHUB_STEP_SUMMARY
         echo "- Application launch: " >> $GITHUB_STEP_SUMMARY
