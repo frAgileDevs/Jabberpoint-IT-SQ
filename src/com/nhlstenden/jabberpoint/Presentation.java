@@ -1,3 +1,8 @@
+package com.nhlstenden.jabberpoint;
+
+import com.nhlstenden.jabberpoint.slide.Slide;
+import com.nhlstenden.jabberpoint.slide.SlideViewerComponent;
+
 import java.util.ArrayList;
 
 

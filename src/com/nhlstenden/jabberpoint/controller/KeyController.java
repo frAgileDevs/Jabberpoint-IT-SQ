@@ -1,3 +1,7 @@
+package com.nhlstenden.jabberpoint.controller;
+
+import com.nhlstenden.jabberpoint.Presentation;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyAdapter;
 

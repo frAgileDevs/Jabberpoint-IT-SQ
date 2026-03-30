@@ -1,3 +1,8 @@
+package com.nhlstenden.jabberpoint;
+
+import com.nhlstenden.jabberpoint.slide.Slide;
+import com.nhlstenden.jabberpoint.slide.SlideItem;
+
 import java.awt.Rectangle;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -24,7 +29,8 @@ import java.util.ArrayList;
  * @version 1.6 2014/05/16 Sylvia Stuurman
  */
 
-public class TextItem extends SlideItem {
+public class TextItem extends SlideItem
+{
 	private String text;
 	
 	private static final String EMPTYTEXT = "No Text Given";
