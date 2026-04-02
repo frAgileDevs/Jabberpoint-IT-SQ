@@ -1,6 +1,7 @@
 package com.nhlstenden.jabberpoint.builder;
 
 import com.nhlstenden.jabberpoint.Presentation;
+import com.sun.net.httpserver.Headers;
 
 import javax.lang.model.element.Element;
 import java.util.ArrayList;
@@ -60,6 +61,7 @@ public class XMLPresentationBuilder
     public String build() {
         return String.join("\n", headerList);
     }
+
 
     public void setSlideElement(String elementLine)
     {

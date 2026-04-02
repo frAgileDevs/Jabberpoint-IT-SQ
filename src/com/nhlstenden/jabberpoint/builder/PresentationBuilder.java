@@ -24,7 +24,12 @@ public abstract class PresentationBuilder {
 		currentSlide = new Slide();
 	}
 
-	public void setSlideTitle(String title) {
+    public Slide getCurrentSlide()
+    {
+        return this.currentSlide;
+    }
+
+    public void setSlideTitle(String title) {
 		ensureCurrentSlide();
 		currentSlide.setTitle(title);
 	}

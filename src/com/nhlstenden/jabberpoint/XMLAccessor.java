@@ -1,4 +1,6 @@
 package com.nhlstenden.jabberpoint;
+import com.nhlstenden.jabberpoint.builder.DefaultPresentationBuilder;
+import com.nhlstenden.jabberpoint.builder.PresentationBuilder;
 import com.nhlstenden.jabberpoint.builder.XMLPresentationBuilder;
 import com.nhlstenden.jabberpoint.slide.Slide;
 import com.nhlstenden.jabberpoint.slide.SlideItem;
@@ -64,22 +66,25 @@ public class XMLAccessor extends Accessor {
 			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			Document document = builder.parse(new File(filename)); // Create a JDOM document
 			Element doc = document.getDocumentElement();
-			presentation.setTitle(getTitle(doc, SHOWTITLE));
+            PresentationBuilder presentationBuilder = new DefaultPresentationBuilder(presentation);
+
+            presentationBuilder.setPresentationTitle(getTitle(doc,SHOWTITLE));
 
 			NodeList slides = doc.getElementsByTagName(SLIDE);
 			max = slides.getLength();
 			for (slideNumber = 0; slideNumber < max; slideNumber++) {
 				Element xmlSlide = (Element) slides.item(slideNumber);
-				Slide slide = new Slide();
-				slide.setTitle(this.getTitle(xmlSlide, SLIDETITLE));
-				presentation.append(slide);
+                presentationBuilder.startSlide();
+                presentationBuilder.setSlideTitle(this.getTitle(xmlSlide, SLIDETITLE));
 
 				NodeList slideItems = xmlSlide.getElementsByTagName(ITEM);
 				maxItems = slideItems.getLength();
 				for (itemNumber = 0; itemNumber < maxItems; itemNumber++) {
 					Element item = (Element) slideItems.item(itemNumber);
-					loadSlideItem(slide, item);
+					loadSlideItem(presentationBuilder.getCurrentSlide(), item);
 				}
+
+                presentationBuilder.finishSlide();
 			}
 		}
 		catch (IOException iox) {
@@ -114,7 +119,6 @@ public class XMLAccessor extends Accessor {
         this.checkIfFolderExists(defaultFolder);
 
         File fileToSavePath = new File(defaultFolder, filename);
-        PrintWriter out = new PrintWriter(new FileWriter(fileToSavePath));
         XMLPresentationBuilder presentationBuilder = new XMLPresentationBuilder(presentation);
 
 		presentationBuilder.setPresentationStart();
@@ -133,20 +137,13 @@ public class XMLAccessor extends Accessor {
             presentationBuilder.setSlideEnd();
 		}
 
-        // Debug: show exactly what the builder has accumulated.
-        java.util.List<String> headers = presentationBuilder.getHeaderList();
-        System.err.println("XMLPresentationBuilder headerList size=" + headers.size());
-        for (int i = 0; i < headers.size(); i++) {
-            System.err.println("[" + i + "] " + headers.get(i));
-        }
-
 		presentationBuilder.setPresentationEnd();
-//        out.close();
 
         try {
             PrintWriter printer = new PrintWriter(new FileWriter(fileToSavePath));
             printer.print(presentationBuilder.build());
             printer.close();
+            XMLFormatter xmlFormatter = new XMLFormatter(fileToSavePath);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
