@@ -1,6 +1,4 @@
-/** <p>Command to exit the application.</p>
- * @version 1.0 2026/04/05
- */
+// <p>Command to exit the application.</p>
 public class ExitCommand implements Command {
 	private Presentation presentation;
 
