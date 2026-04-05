@@ -1,17 +1,13 @@
 package com.nhlstenden.jabberpoint.builder;
 
 import com.nhlstenden.jabberpoint.Presentation;
-import com.sun.net.httpserver.Headers;
 
-import javax.lang.model.element.Element;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-public class XMLPresentationBuilder
+public class XMLPresentationBuilder extends PresentationBuilder
 {
-    private Presentation presentation;
     String[] headers = {
             "<?xml version=\"1.0\"?>",
             "<!DOCTYPE presentation SYSTEM \"jabberpoint.dtd\">"
@@ -20,22 +16,43 @@ public class XMLPresentationBuilder
 
     public XMLPresentationBuilder(Presentation presentation)
     {
-        this.presentation = presentation;
+        super(presentation);
     }
 
+    @Override
     public void setPresentationTitle(String title)
     {
         this.headerList.add(String.format("<showtitle>%s</showtitle>",title));
     }
 
+    @Override
     public void setSlideTitle(String title)
     {
         this.headerList.add(String.format("<title>%s</title>", title));
     }
 
-    public void setSlide()
+    @Override
+    public void setSlideStart()
     {
-        this.headerList.add("<slide></slide>");
+        this.headerList.add("<slide>");
+    }
+
+    @Override
+    public void setSlideFinish()
+    {
+        this.headerList.add("</slide>");
+    }
+
+    @Override
+    public void setBitmapItem(int level, String text)
+    {
+
+    }
+
+    @Override
+    public void setTextItem(int level, String imageUrl)
+    {
+
     }
 
     public void setPresentationStart()
@@ -48,28 +65,12 @@ public class XMLPresentationBuilder
         this.headerList.add("</presentation>");
     }
 
-    public void setSlideStart()
-    {
-        this.headerList.add("<slide>");
-    }
-
-    public void setSlideEnd()
-    {
-        this.headerList.add("</slide>");
-    }
-
-    public String build() {
-        return String.join("\n", headerList);
-    }
-
-
     public void setSlideElement(String elementLine)
     {
         this.headerList.add(elementLine);
     }
 
-    public List<String> getHeaderList()
-    {
-        return this.headerList;
+    public String build() {
+        return String.join("\n", headerList);
     }
 }

@@ -1,6 +1,5 @@
 package com.nhlstenden.jabberpoint;
 import com.nhlstenden.jabberpoint.builder.DefaultPresentationBuilder;
-import com.nhlstenden.jabberpoint.builder.PresentationBuilder;
 import com.nhlstenden.jabberpoint.builder.XMLPresentationBuilder;
 import com.nhlstenden.jabberpoint.slide.Slide;
 import com.nhlstenden.jabberpoint.slide.SlideItem;
@@ -55,99 +54,96 @@ public class XMLAccessor extends Accessor {
     protected static final DefaultSlideItemFactory defaultSlideItemFactory = new DefaultSlideItemFactory();
     protected static final DefaultWriterFactory defaultWriterFactory = new DefaultWriterFactory();
 
+    protected XMLPresentationBuilder xmlPresentationBuilder;
+
     private String getTitle(Element element, String tagName) {
     	NodeList titles = element.getElementsByTagName(tagName);
     	return titles.item(0).getTextContent();
     }
 
-	public void loadFile(Presentation presentation, String filename) throws IOException {
-		int slideNumber, itemNumber, max = 0, maxItems = 0;
+	public void loadFile(Presentation presentation, String filename) {
 		try {
-			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			Document document = builder.parse(new File(filename)); // Create a JDOM document
-			Element doc = document.getDocumentElement();
-            PresentationBuilder presentationBuilder = new DefaultPresentationBuilder(presentation);
+            Element documentAsElement = getDocumentAsElement(filename);
 
-            presentationBuilder.setPresentationTitle(getTitle(doc,SHOWTITLE));
+            DefaultPresentationBuilder presentationBuilder = new DefaultPresentationBuilder(presentation);
+            presentationBuilder.setPresentationTitle(getTitle(documentAsElement,SHOWTITLE));
 
-			NodeList slides = doc.getElementsByTagName(SLIDE);
-			max = slides.getLength();
-			for (slideNumber = 0; slideNumber < max; slideNumber++) {
+			NodeList slides = documentAsElement.getElementsByTagName(SLIDE);
+			for (int slideNumber = 0; slideNumber < slides.getLength(); slideNumber++) {
 				Element xmlSlide = (Element) slides.item(slideNumber);
-                presentationBuilder.startSlide();
+
+                presentationBuilder.setSlideStart();
                 presentationBuilder.setSlideTitle(this.getTitle(xmlSlide, SLIDETITLE));
 
 				NodeList slideItems = xmlSlide.getElementsByTagName(ITEM);
-				maxItems = slideItems.getLength();
-				for (itemNumber = 0; itemNumber < maxItems; itemNumber++) {
+				for (int itemNumber = 0; itemNumber < slideItems.getLength(); itemNumber++) {
 					Element item = (Element) slideItems.item(itemNumber);
 					loadSlideItem(presentationBuilder.getCurrentSlide(), item);
 				}
 
-                presentationBuilder.finishSlide();
+                presentationBuilder.setSlideFinish();
 			}
-		}
-		catch (IOException iox) {
-			System.err.println(iox.toString());
-		}
-		catch (SAXException sax) {
-			System.err.println(sax.getMessage());
-		}
-		catch (ParserConfigurationException pcx) {
-			System.err.println(PCE);
-		}
-	}
+		} catch (IOException | SAXException | ParserConfigurationException e) {
+            System.err.println(e.getMessage());
+        }
+    }
 
 	protected void loadSlideItem(Slide slide, Element item) {
 		int level = 1; // default
-		String leveltext = item.getAttributes().getNamedItem(LEVEL).getTextContent();
+		String levelText = item.getAttributes().getNamedItem(LEVEL).getTextContent();
 
-		if (leveltext != null) {
+		if (levelText != null) {
 			try {
-				level = Integer.parseInt(leveltext);
+				level = Integer.parseInt(levelText);
 			}
 			catch(NumberFormatException x) {
 				System.err.println(NFE);
 			}
 		}
-
         slide.append(defaultSlideItemFactory.createSlideItem(item, level));
 	}
 
-	public void saveFile(Presentation presentation, String filename) throws IOException {
-        File defaultFolder = new File("resources");
-        this.checkIfFolderExists(defaultFolder);
+	public void saveFile(Presentation presentation, String filename) {
+        File fileToSavePath = getFileToSave(filename);
 
-        File fileToSavePath = new File(defaultFolder, filename);
-        XMLPresentationBuilder presentationBuilder = new XMLPresentationBuilder(presentation);
-
-		presentationBuilder.setPresentationStart();
-		presentationBuilder.setPresentationTitle(presentation.getTitle());
+        this.xmlPresentationBuilder = new XMLPresentationBuilder(presentation);
+        this.xmlPresentationBuilder.setPresentationStart();
+        this.xmlPresentationBuilder.setPresentationTitle(presentation.getTitle());
 
 		for (int slideNumber=0; slideNumber<presentation.getSize(); slideNumber++) {
 			Slide slide = presentation.getSlide(slideNumber);
-			presentationBuilder.setSlideStart();
 
-            presentationBuilder.setSlideTitle(slide.getTitle());
+            this.xmlPresentationBuilder.setSlideStart();
+            this.xmlPresentationBuilder.setSlideTitle(slide.getTitle());
+
 			Vector<SlideItem> slideItems = slide.getSlideItems();
+
 			for (int itemNumber = 0; itemNumber<slideItems.size(); itemNumber++) {
 				SlideItem slideItem = (SlideItem) slideItems.elementAt(itemNumber);
-                presentationBuilder.setSlideElement(defaultWriterFactory.getSlideItemToWrite(slideItem, slideItem.getLevel()));
+                xmlPresentationBuilder.setSlideElement(defaultWriterFactory.getSlideItemToWrite(slideItem,
+                        slideItem.getLevel()));
 			}
-            presentationBuilder.setSlideEnd();
+            xmlPresentationBuilder.setSlideFinish();
 		}
-
-		presentationBuilder.setPresentationEnd();
-
-        try {
-            PrintWriter printer = new PrintWriter(new FileWriter(fileToSavePath));
-            printer.print(presentationBuilder.build());
-            printer.close();
-            XMLFormatter xmlFormatter = new XMLFormatter(fileToSavePath);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        xmlPresentationBuilder.setPresentationEnd();
+        printNewPresentation(fileToSavePath);
 	}
+
+    public Element getDocumentAsElement(String filename) throws ParserConfigurationException, IOException, SAXException
+    {
+        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Document document = builder.parse(new File(filename));
+
+        return document.getDocumentElement();
+    }
+
+    public File getFileToSave(String filename)
+    {
+        File defaultFolder = new File("resources");
+        this.checkIfFolderExists(defaultFolder);
+
+        return new File(defaultFolder, filename);
+    }
 
     public void checkIfFolderExists(File folder)
     {
@@ -160,9 +156,15 @@ public class XMLAccessor extends Accessor {
         }
     }
 
-    public File getNewFilePath(String folderName, String fileName)
+    public void printNewPresentation(File fileToSavePath)
     {
-        return null;
+        try {
+            PrintWriter printer = new PrintWriter(new FileWriter(fileToSavePath));
+            printer.print(this.xmlPresentationBuilder.build());
+            printer.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
