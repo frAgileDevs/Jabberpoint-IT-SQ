@@ -1,6 +1,7 @@
 package com.nhlstenden.jabberpoint.builder;
 
 import com.nhlstenden.jabberpoint.Presentation;
+import com.nhlstenden.jabberpoint.slide.SlideItem;
 
 public abstract class PresentationBuilder
 {
@@ -25,14 +26,10 @@ public abstract class PresentationBuilder
         presentation.setTitle(title);
     }
 
-    public void setSlideElement()
-    {
-
-    }
-
     public abstract void setSlideTitle(String title);
     public abstract void setSlideStart();
     public abstract void setSlideFinish();
-    public abstract void setBitmapItem(int level, String text);
-    public abstract void setTextItem(int level, String imageUrl);
+    public abstract void setBitmapItem(int level, String name);
+    public abstract void setTextItem(int level, String text);
+    public abstract void addSlideItem(SlideItem item);
 }
