@@ -1,4 +1,8 @@
-package com.nhlstenden.jabberpoint;
+package com.nhlstenden.jabberpoint.command;
+
+import com.nhlstenden.jabberpoint.Presentation;
+import com.nhlstenden.jabberpoint.accessor.Accessor;
+import com.nhlstenden.jabberpoint.accessor.XMLAccessor;
 
 import java.awt.Frame;
 import java.io.IOException;

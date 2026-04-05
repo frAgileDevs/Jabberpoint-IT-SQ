@@ -1,5 +1,6 @@
 package com.nhlstenden.jabberpoint;
 
+import com.nhlstenden.jabberpoint.controller.MenuController;
 import org.junit.jupiter.api.Test;
 import java.awt.Frame;
 import java.awt.MenuItem;

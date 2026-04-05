@@ -1,6 +1,8 @@
-package com.nhlstenden.jabberpoint;
+package com.nhlstenden.jabberpoint.command;
 
 // <p>Command to advance to the next slide.</p>
+
+import com.nhlstenden.jabberpoint.Presentation;
 
 public class NextSlideCommand implements Command {
 	private Presentation presentation;

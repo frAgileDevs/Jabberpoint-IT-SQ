@@ -1,6 +1,8 @@
 package com.nhlstenden.jabberpoint;
 
 import com.nhlstenden.jabberpoint.slide.Slide;
+import com.nhlstenden.jabberpoint.slide.TextItem;
+import com.nhlstenden.jabberpoint.slide.utility.Style;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

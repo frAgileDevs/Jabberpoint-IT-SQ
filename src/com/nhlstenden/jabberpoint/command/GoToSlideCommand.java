@@ -1,4 +1,6 @@
-package com.nhlstenden.jabberpoint;
+package com.nhlstenden.jabberpoint.command;
+
+import com.nhlstenden.jabberpoint.Presentation;
 
 import java.awt.Frame;
 import javax.swing.JOptionPane;
@@ -8,7 +10,7 @@ public class GoToSlideCommand implements Command {
 	private Presentation presentation;
 	private Frame parent;
 
-	protected static final String PAGENR = "Page number?";
+	public static final String PAGENR = "Page number?";
 
 	public GoToSlideCommand(Presentation presentation, Frame parent) {
 		this.presentation = presentation;

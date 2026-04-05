@@ -1,6 +1,9 @@
 package com.nhlstenden.jabberpoint;
 
+import com.nhlstenden.jabberpoint.accessor.Accessor;
+import com.nhlstenden.jabberpoint.accessor.XMLAccessor;
 import com.nhlstenden.jabberpoint.slide.SlideViewerFrame;
+import com.nhlstenden.jabberpoint.slide.utility.Style;
 
 import javax.swing.JOptionPane;
 
