@@ -31,5 +31,5 @@ public abstract class PresentationBuilder
     public abstract void setSlideFinish();
     public abstract void setBitmapItem(int level, String name);
     public abstract void setTextItem(int level, String text);
-    public abstract void addSlideItem(SlideItem item);
+    public abstract void setSlideItem(SlideItem item);
 }

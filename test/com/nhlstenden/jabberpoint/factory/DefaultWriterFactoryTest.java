@@ -18,7 +18,7 @@ class DefaultWriterFactoryTest {
 	void testGetWrittenTextItem() {
 		DefaultWriterFactory factory = new DefaultWriterFactory();
 		TextItem textItem = new TextItem(1, "Hello");
-		String result = factory.getWrittenTextItem(textItem, 1);
+		String result = factory.getSlideItemToWrite(textItem, 1);
 		assertTrue(result.contains("text"));
 		assertTrue(result.contains("Hello"));
 		assertTrue(result.contains("1"));
@@ -28,7 +28,7 @@ class DefaultWriterFactoryTest {
 	void testGetWrittenBitmapItem() {
 		DefaultWriterFactory factory = new DefaultWriterFactory();
 		BitmapItem bitmapItem = new BitmapItem(2, "image.png");
-		String result = factory.getWrittenBitmapItem(bitmapItem, 2);
+		String result = factory.getSlideItemToWrite(bitmapItem, 2);
 		assertTrue(result.contains("image"));
 		assertTrue(result.contains("image.png"));
 		assertTrue(result.contains("2"));
