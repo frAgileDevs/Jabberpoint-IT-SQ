@@ -61,7 +61,7 @@ public class XMLPresentationBuilder extends PresentationBuilder
     }
 
     @Override
-    public void addSlideItem(SlideItem item)
+    public void setSlideItem(SlideItem item)
     {
         this.headerList.add(writerFactory.getSlideItemToWrite(item, item.getLevel()));
     }

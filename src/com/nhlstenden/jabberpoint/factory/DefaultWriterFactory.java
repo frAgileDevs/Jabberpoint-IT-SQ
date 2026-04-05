@@ -10,7 +10,7 @@ import java.util.function.BiFunction;
 
 public class DefaultWriterFactory extends WriterFactory
 {
-    private final Map<Class<? extends SlideItem>, BiFunction<SlideItem, Integer, String>> writerRegistry
+    private final Map<Class<? extends SlideItem>, BiFunction<SlideItem, Integer, String>> WRITER_REGISTRY
             = new HashMap<>();
 
     public DefaultWriterFactory()
@@ -23,7 +23,7 @@ public class DefaultWriterFactory extends WriterFactory
 
     public void registerNewElement(Class<? extends SlideItem> type, BiFunction<SlideItem, Integer, String> writer)
     {
-        writerRegistry.put(type, writer);
+        WRITER_REGISTRY.put(type, writer);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class DefaultWriterFactory extends WriterFactory
     {
         parameterNullCheck(slideItem);
 
-        BiFunction<SlideItem, Integer, String> writer = writerRegistry.get(slideItem.getClass());
+        BiFunction<SlideItem, Integer, String> writer = WRITER_REGISTRY.get(slideItem.getClass());
 
         if (writer == null) {
             System.err.println("Unknown type: " + slideItem.getClass().getName());

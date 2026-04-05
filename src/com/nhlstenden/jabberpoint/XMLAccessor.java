@@ -110,7 +110,7 @@ public class XMLAccessor extends Accessor {
 		SlideItem slideItem = slideItemFactory.createSlideItem(item, level);
 
 		if (slideItem != null) {
-			builder.addSlideItem(slideItem);
+			builder.setSlideItem(slideItem);
 		}
 	}
 
@@ -131,7 +131,7 @@ public class XMLAccessor extends Accessor {
 
 			for (int itemNumber = 0; itemNumber<slideItems.size(); itemNumber++) {
 				SlideItem slideItem = (SlideItem) slideItems.elementAt(itemNumber);
-                xmlPresentationBuilder.addSlideItem(slideItem);
+                xmlPresentationBuilder.setSlideItem(slideItem);
 			}
             xmlPresentationBuilder.setSlideFinish();
 		}
