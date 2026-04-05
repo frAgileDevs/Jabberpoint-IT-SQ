@@ -55,6 +55,6 @@ class DemoPresentation extends Accessor {
 	}
 
 	public void saveFile(Presentation presentation, String unusedFilename) {
-        System.out.println("Save As->Demo! called");
+        throw  new IllegalStateException("This method is not supported");
 	}
 }

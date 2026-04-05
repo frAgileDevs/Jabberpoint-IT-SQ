@@ -51,7 +51,7 @@ public class DefaultPresentationBuilder extends PresentationBuilder
     }
 
     @Override
-    public void addSlideItem(SlideItem item)
+    public void setSlideItem(SlideItem item)
     {
         ensureCurrentSlide();
         currentSlide.append(item);

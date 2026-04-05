@@ -1,6 +1,8 @@
 package com.nhlstenden.jabberpoint.builder;
 
 import com.nhlstenden.jabberpoint.Presentation;
+import com.nhlstenden.jabberpoint.factory.DefaultWriterFactory;
+import com.nhlstenden.jabberpoint.factory.WriterFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -9,11 +11,13 @@ class XMLPresentationBuilderTest {
 
 	private Presentation presentation;
 	private XMLPresentationBuilder builder;
+    private WriterFactory writerFactory;
 
 	@BeforeEach
 	void setUp() {
 		presentation = new Presentation();
-		builder = new XMLPresentationBuilder(presentation);
+        writerFactory = new DefaultWriterFactory();
+		builder = new XMLPresentationBuilder(presentation,writerFactory);
 	}
 
 	@Test
@@ -25,7 +29,7 @@ class XMLPresentationBuilderTest {
 	@Test
 	void testConstructorRejectsNull() {
 		assertThrows(IllegalArgumentException.class, () -> {
-			new XMLPresentationBuilder(null);
+			new XMLPresentationBuilder(null,null);
 		});
 	}
 
