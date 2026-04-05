@@ -1,3 +1,5 @@
+package com.nhlstenden.jabberpoint.slide.utility;
+
 import java.awt.Frame;
 import javax.swing.JOptionPane;
 

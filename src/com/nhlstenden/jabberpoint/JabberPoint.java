@@ -1,3 +1,7 @@
+package com.nhlstenden.jabberpoint;
+
+import com.nhlstenden.jabberpoint.slide.SlideViewerFrame;
+
 import javax.swing.JOptionPane;
 
 import java.io.IOException;

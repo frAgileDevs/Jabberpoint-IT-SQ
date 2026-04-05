@@ -1,3 +1,7 @@
+package com.nhlstenden.jabberpoint;
+
+import com.nhlstenden.jabberpoint.slide.SlideItem;
+
 import java.awt.Rectangle;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -7,6 +11,7 @@ import java.io.File;
 import javax.imageio.ImageIO;
 
 import java.io.IOException;
+
 
 
 /** <p>The class for a Bitmap item</p>
@@ -20,7 +25,8 @@ import java.io.IOException;
  * @version 1.6 2014/05/16 Sylvia Stuurman
 */
 
-public class BitmapItem extends SlideItem {
+public class BitmapItem extends SlideItem
+{
   private BufferedImage bufferedImage;
   private String imageName;
   
