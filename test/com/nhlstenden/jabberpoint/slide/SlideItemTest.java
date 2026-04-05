@@ -1,6 +1,6 @@
 package com.nhlstenden.jabberpoint.slide;
 
-import com.nhlstenden.jabberpoint.TextItem;
+
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

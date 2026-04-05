@@ -1,4 +1,4 @@
-package com.nhlstenden.jabberpoint;
+package com.nhlstenden.jabberpoint.slide.utility;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -20,11 +20,11 @@ public class Style {
 	private static Style[] styles; // the styles
 	
 	private static final String FONTNAME = "Helvetica";
-	protected int indent;
-	protected Color color;
+	public int indent;
+	public Color color;
     protected Font font;
-    protected int fontSize;
-    protected int leading;
+    public int fontSize;
+    public int leading;
 
 	public static void createStyles() {
 		styles = new Style[5];

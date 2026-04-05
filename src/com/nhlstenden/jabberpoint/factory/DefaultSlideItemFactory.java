@@ -1,7 +1,7 @@
 package com.nhlstenden.jabberpoint.factory;
 
-import com.nhlstenden.jabberpoint.BitmapItem;
-import com.nhlstenden.jabberpoint.TextItem;
+import com.nhlstenden.jabberpoint.slide.BitmapItem;
+import com.nhlstenden.jabberpoint.slide.TextItem;
 import com.nhlstenden.jabberpoint.slide.SlideItem;
 import org.w3c.dom.Element;
 
@@ -9,24 +9,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-public class DefaultSlideItemFactory extends SlideItemFactory
-{
+public class DefaultSlideItemFactory extends SlideItemFactory {
     private final Map<String, BiFunction<Integer, String, SlideItem>> registry = new HashMap<>();
 
-    public DefaultSlideItemFactory()
-    {
+    public DefaultSlideItemFactory() {
         registerItem("text", TextItem::new);
         registerItem("image", BitmapItem::new);
     }
 
-    public void registerItem(String type, BiFunction<Integer, String, SlideItem> creator)
-    {
+    public void registerItem(String type, BiFunction<Integer, String, SlideItem> creator) {
         registry.put(type, creator);
     }
 
     @Override
-    public SlideItem createSlideItem(Element element, int level)
-    {
+    public SlideItem createSlideItem(Element element, int level) {
         String itemType = element.getAttributes().getNamedItem("kind").getTextContent();
         String content = element.getTextContent();
 

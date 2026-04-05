@@ -1,8 +1,8 @@
 package com.nhlstenden.jabberpoint.factory;
 
-import com.nhlstenden.jabberpoint.BitmapItem;
-import com.nhlstenden.jabberpoint.TextItem;
+import com.nhlstenden.jabberpoint.slide.BitmapItem;
 import com.nhlstenden.jabberpoint.slide.SlideItem;
+import com.nhlstenden.jabberpoint.slide.TextItem;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

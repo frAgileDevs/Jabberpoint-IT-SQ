@@ -1,6 +1,7 @@
-package com.nhlstenden.jabberpoint;
+package com.nhlstenden.jabberpoint.controller;
 
-import com.nhlstenden.jabberpoint.slide.utility.AboutBox;
+import com.nhlstenden.jabberpoint.Presentation;
+import com.nhlstenden.jabberpoint.command.*;
 
 import java.awt.MenuBar;
 import java.awt.Frame;
@@ -37,7 +38,7 @@ public class MenuController extends MenuBar {
 	protected static final String SAVE = "Save";
 	protected static final String VIEW = "View";
 
-	public MenuController(Frame frame, Presentation presentation) {
+	public MenuController(Frame frame, com.nhlstenden.jabberpoint.Presentation presentation) {
 		MenuItem menuItem;
 
 		// File menu

@@ -1,5 +1,8 @@
 package com.nhlstenden.jabberpoint;
 
+import com.nhlstenden.jabberpoint.command.Command;
+import com.nhlstenden.jabberpoint.command.SaveFileCommand;
+import com.nhlstenden.jabberpoint.slide.TextItem;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

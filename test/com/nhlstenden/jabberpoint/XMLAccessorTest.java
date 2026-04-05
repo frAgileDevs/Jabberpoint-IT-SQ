@@ -1,6 +1,8 @@
 package com.nhlstenden.jabberpoint;
 
+import com.nhlstenden.jabberpoint.accessor.XMLAccessor;
 import com.nhlstenden.jabberpoint.slide.Slide;
+import com.nhlstenden.jabberpoint.slide.TextItem;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 

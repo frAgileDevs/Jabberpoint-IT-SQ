@@ -1,6 +1,8 @@
-package com.nhlstenden.jabberpoint;
+package com.nhlstenden.jabberpoint.command;
 
 // <p>Command to go back to the previous slide.</p>
+
+import com.nhlstenden.jabberpoint.Presentation;
 
 public class PrevSlideCommand implements Command {
 	private Presentation presentation;

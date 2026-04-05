@@ -1,5 +1,6 @@
 package com.nhlstenden.jabberpoint;
 
+import com.nhlstenden.jabberpoint.command.PrevSlideCommand;
 import com.nhlstenden.jabberpoint.slide.Slide;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;

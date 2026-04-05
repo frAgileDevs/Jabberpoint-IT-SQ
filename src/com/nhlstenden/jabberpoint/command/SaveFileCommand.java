@@ -1,4 +1,8 @@
-package com.nhlstenden.jabberpoint;
+package com.nhlstenden.jabberpoint.command;
+
+import com.nhlstenden.jabberpoint.Presentation;
+import com.nhlstenden.jabberpoint.accessor.Accessor;
+import com.nhlstenden.jabberpoint.accessor.XMLAccessor;
 
 import java.awt.Frame;
 import java.io.IOException;
@@ -10,9 +14,9 @@ public class SaveFileCommand implements Command {
 	private Presentation presentation;
 	private Frame parent;
 
-	protected static final String SAVEFILE = "dump.xml";
-	protected static final String IOEX = "IO Exception: ";
-	protected static final String SAVEERR = "Save Error";
+	public static final String SAVEFILE = "dump.xml";
+	public static final String IOEX = "IO Exception: ";
+	public static final String SAVEERR = "Save Error";
 
 	public SaveFileCommand(Presentation presentation, Frame parent) {
 		this.presentation = presentation;

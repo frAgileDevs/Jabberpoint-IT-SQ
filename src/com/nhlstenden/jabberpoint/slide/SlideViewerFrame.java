@@ -1,8 +1,8 @@
 package com.nhlstenden.jabberpoint.slide;
 
-import com.nhlstenden.jabberpoint.MenuController;
 import com.nhlstenden.jabberpoint.Presentation;
 import com.nhlstenden.jabberpoint.controller.KeyController;
+import com.nhlstenden.jabberpoint.controller.MenuController;
 
 import java.awt.Dimension;
 import java.awt.event.WindowEvent;
