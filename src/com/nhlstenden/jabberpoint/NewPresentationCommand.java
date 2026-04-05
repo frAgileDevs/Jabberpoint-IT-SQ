@@ -1,8 +1,7 @@
 import java.awt.Frame;
 
-/** <p>Command to create a new (empty) presentation.</p>
- * @version 1.0 2026/04/05
- */
+// <p>Command to create a new (empty) presentation.</p>
+
 public class NewPresentationCommand implements Command {
 	private Presentation presentation;
 	private Frame parent;
