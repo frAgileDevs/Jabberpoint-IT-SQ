@@ -3,20 +3,11 @@ package com.nhlstenden.jabberpoint;
 import com.nhlstenden.jabberpoint.slide.Slide;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 class NextSlideCommandTest {
 
 	@Test
-	void testExecuteCallsNextSlide() {
-		Presentation mockPresentation = mock(Presentation.class);
-		NextSlideCommand command = new NextSlideCommand(mockPresentation);
-		command.execute();
-		verify(mockPresentation).nextSlide();
-	}
-
-	@Test
-	void testExecuteAdvancesSlide() {
+	void testExecuteAdvancesOneSlide() {
 		Presentation presentation = new Presentation();
 		presentation.append(new Slide());
 		presentation.append(new Slide());
@@ -29,9 +20,29 @@ class NextSlideCommandTest {
 	}
 
 	@Test
-	void testImplementsCommand() {
+	void testExecuteDoesNotGoPastLastSlide() {
 		Presentation presentation = new Presentation();
+		presentation.append(new Slide());
+		presentation.setSlideNumber(0);
+
 		NextSlideCommand command = new NextSlideCommand(presentation);
-		assertTrue(command instanceof Command);
+		command.execute();
+
+		assertEquals(0, presentation.getSlideNumber());
+	}
+
+	@Test
+	void testExecuteMultipleTimes() {
+		Presentation presentation = new Presentation();
+		presentation.append(new Slide());
+		presentation.append(new Slide());
+		presentation.append(new Slide());
+		presentation.setSlideNumber(0);
+
+		NextSlideCommand command = new NextSlideCommand(presentation);
+		command.execute();
+		command.execute();
+
+		assertEquals(2, presentation.getSlideNumber());
 	}
 }

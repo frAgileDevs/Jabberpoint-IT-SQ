@@ -1,13 +1,25 @@
 package com.nhlstenden.jabberpoint.slide;
 
+import com.nhlstenden.jabberpoint.Style;
 import com.nhlstenden.jabberpoint.TextItem;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class SlideTest {
 
 	private Slide slide;
+
+	@BeforeAll
+	static void initStyles() {
+		Style.createStyles();
+	}
 
 	@BeforeEach
 	void setUp() {
@@ -67,5 +79,36 @@ class SlideTest {
 			slide.append(i, "Item " + i);
 		}
 		assertEquals(5, slide.getSize());
+	}
+
+	@Test
+	void testGetSlideItemReturnsCorrectItem() {
+		TextItem first = new TextItem(1, "First");
+		TextItem second = new TextItem(2, "Second");
+		slide.append(first);
+		slide.append(second);
+		assertEquals(first, slide.getSlideItem(0));
+		assertEquals(second, slide.getSlideItem(1));
+	}
+
+	@Test
+	void testDrawDoesNotThrow() {
+		slide.setTitle("Draw Test");
+		slide.append(new TextItem(1, "Hello"));
+		BufferedImage img = new BufferedImage(Slide.WIDTH, Slide.HEIGHT, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = img.createGraphics();
+		Rectangle area = new Rectangle(0, 20, Slide.WIDTH, Slide.HEIGHT - 20);
+		assertDoesNotThrow(() -> slide.draw(g, area, null));
+		g.dispose();
+	}
+
+	@Test
+	void testDrawEmptySlideDoesNotThrow() {
+		slide.setTitle("Empty");
+		BufferedImage img = new BufferedImage(Slide.WIDTH, Slide.HEIGHT, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = img.createGraphics();
+		Rectangle area = new Rectangle(0, 20, Slide.WIDTH, Slide.HEIGHT - 20);
+		assertDoesNotThrow(() -> slide.draw(g, area, null));
+		g.dispose();
 	}
 }

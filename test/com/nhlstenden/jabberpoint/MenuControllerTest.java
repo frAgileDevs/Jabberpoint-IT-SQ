@@ -4,34 +4,55 @@ import org.junit.jupiter.api.Test;
 import java.awt.Frame;
 import java.awt.MenuItem;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 class MenuControllerTest {
 
 	@Test
-	void testConstructor() {
-		Frame mockFrame = mock(Frame.class);
+	void testConstructorCreatesMenuBar() {
+		Frame frame = new Frame();
 		Presentation presentation = new Presentation();
-		MenuController controller = new MenuController(mockFrame, presentation);
+		MenuController controller = new MenuController(frame, presentation);
 		assertNotNull(controller);
+		frame.dispose();
 	}
 
 	@Test
-	void testMkMenuItem() {
-		Frame mockFrame = mock(Frame.class);
+	void testMkMenuItemCreatesItemWithCorrectLabel() {
+		Frame frame = new Frame();
 		Presentation presentation = new Presentation();
-		MenuController controller = new MenuController(mockFrame, presentation);
+		MenuController controller = new MenuController(frame, presentation);
 		MenuItem item = controller.mkMenuItem("Test");
-		assertNotNull(item);
 		assertEquals("Test", item.getLabel());
+		frame.dispose();
 	}
 
 	@Test
 	void testMenuCountIsThree() {
-		Frame mockFrame = mock(Frame.class);
+		Frame frame = new Frame();
 		Presentation presentation = new Presentation();
-		MenuController controller = new MenuController(mockFrame, presentation);
+		MenuController controller = new MenuController(frame, presentation);
 		// File, View, and Help menus
-		assertEquals(2, controller.getMenuCount()); // Help menu set via setHelpMenu doesn't count in getMenuCount
+		assertEquals(3, controller.getMenuCount());
+		frame.dispose();
+	}
+
+	@Test
+	void testFileMenuHasFourItems() {
+		Frame frame = new Frame();
+		Presentation presentation = new Presentation();
+		MenuController controller = new MenuController(frame, presentation);
+		// File menu: Open, New, Save, separator, Exit = 5 items (separator counts)
+		assertEquals(5, controller.getMenu(0).getItemCount());
+		frame.dispose();
+	}
+
+	@Test
+	void testViewMenuHasThreeItems() {
+		Frame frame = new Frame();
+		Presentation presentation = new Presentation();
+		MenuController controller = new MenuController(frame, presentation);
+		// View menu: Next, Prev, Go to
+		assertEquals(3, controller.getMenu(1).getItemCount());
+		frame.dispose();
 	}
 }

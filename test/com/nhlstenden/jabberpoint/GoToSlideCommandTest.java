@@ -6,16 +6,15 @@ import static org.junit.jupiter.api.Assertions.*;
 class GoToSlideCommandTest {
 
 	@Test
-	void testConstructor() {
-		Presentation presentation = new Presentation();
-		GoToSlideCommand command = new GoToSlideCommand(presentation, null);
-		assertNotNull(command);
+	void testPageNumberPromptConstant() {
+		assertEquals("Page number?", GoToSlideCommand.PAGENR);
 	}
 
 	@Test
-	void testImplementsCommand() {
+	void testConstructorStoresPresentation() {
 		Presentation presentation = new Presentation();
 		GoToSlideCommand command = new GoToSlideCommand(presentation, null);
+		assertNotNull(command);
 		assertTrue(command instanceof Command);
 	}
 }

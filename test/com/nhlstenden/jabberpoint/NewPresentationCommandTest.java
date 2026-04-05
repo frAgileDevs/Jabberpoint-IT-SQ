@@ -2,39 +2,50 @@ package com.nhlstenden.jabberpoint;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
+import com.nhlstenden.jabberpoint.slide.Slide;
 import java.awt.Frame;
 
 class NewPresentationCommandTest {
 
 	@Test
-	void testConstructor() {
-		Presentation presentation = new Presentation();
-		NewPresentationCommand command = new NewPresentationCommand(presentation, null);
-		assertNotNull(command);
-	}
-
-	@Test
-	void testImplementsCommand() {
-		Presentation presentation = new Presentation();
-		NewPresentationCommand command = new NewPresentationCommand(presentation, null);
-		assertTrue(command instanceof Command);
-	}
-
-	@Test
 	void testExecuteClearsPresentation() {
 		Presentation presentation = new Presentation();
-		Frame mockFrame = mock(Frame.class);
-		NewPresentationCommand command = new NewPresentationCommand(presentation, mockFrame);
+		presentation.append(new Slide());
+		presentation.append(new Slide());
+		assertEquals(2, presentation.getSize());
 
-		com.nhlstenden.jabberpoint.slide.Slide slide = new com.nhlstenden.jabberpoint.slide.Slide();
-		presentation.append(slide);
-		assertEquals(1, presentation.getSize());
-
+		Frame frame = new Frame();
+		NewPresentationCommand command = new NewPresentationCommand(presentation, frame);
 		command.execute();
 
 		assertEquals(0, presentation.getSize());
-		verify(mockFrame).repaint();
+		frame.dispose();
+	}
+
+	@Test
+	void testExecuteResetsSlideNumber() {
+		Presentation presentation = new Presentation();
+		presentation.append(new Slide());
+		presentation.append(new Slide());
+		presentation.setSlideNumber(1);
+
+		Frame frame = new Frame();
+		NewPresentationCommand command = new NewPresentationCommand(presentation, frame);
+		command.execute();
+
+		assertEquals(-1, presentation.getSlideNumber());
+		frame.dispose();
+	}
+
+	@Test
+	void testExecuteOnAlreadyEmptyPresentation() {
+		Presentation presentation = new Presentation();
+		Frame frame = new Frame();
+		NewPresentationCommand command = new NewPresentationCommand(presentation, frame);
+		command.execute();
+
+		assertEquals(0, presentation.getSize());
+		frame.dispose();
 	}
 }

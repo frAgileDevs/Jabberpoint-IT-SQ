@@ -121,4 +121,31 @@ class PresentationTest {
 		presentation.clear();
 		assertEquals(0, presentation.getSize());
 	}
+
+	@Test
+	void testClearResetsSlideNumberToMinusOne() {
+		presentation.append(new Slide());
+		presentation.setSlideNumber(0);
+		presentation.clear();
+		assertEquals(-1, presentation.getSlideNumber());
+	}
+
+	@Test
+	void testSetSlideNumberWithSlideViewerComponent() {
+		javax.swing.JFrame frame = new javax.swing.JFrame();
+		com.nhlstenden.jabberpoint.slide.SlideViewerComponent viewer =
+				new com.nhlstenden.jabberpoint.slide.SlideViewerComponent(presentation, frame);
+		presentation.setShowView(viewer);
+		presentation.append(new Slide());
+		// Should update the viewer without throwing
+		assertDoesNotThrow(() -> presentation.setSlideNumber(0));
+		assertEquals(0, presentation.getSlideNumber());
+		frame.dispose();
+	}
+
+	@Test
+	void testGetSlideReturnsNullForTooHighIndex() {
+		presentation.append(new Slide());
+		assertNull(presentation.getSlide(5));
+	}
 }
