@@ -1,8 +1,7 @@
 import java.awt.Frame;
 
-/** <p>Command to show the About dialog.</p>
- * @version 1.0 2026/04/05
- */
+// <p>Command to show the About dialog.</p>
+
 public class AboutCommand implements Command {
 	private Frame parent;
 
