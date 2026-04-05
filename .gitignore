@@ -9,6 +9,9 @@ bin/
 # Runtime generated files
 dump.xml
 
+# Build artifacts
+sources.txt
+
 # OS files
 .DS_Store
 Thumbs.db
