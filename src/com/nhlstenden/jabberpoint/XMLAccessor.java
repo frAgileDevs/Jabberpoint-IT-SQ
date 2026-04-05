@@ -1,5 +1,6 @@
 package com.nhlstenden.jabberpoint;
 import com.nhlstenden.jabberpoint.builder.DefaultPresentationBuilder;
+import com.nhlstenden.jabberpoint.builder.PresentationBuilder;
 import com.nhlstenden.jabberpoint.builder.XMLPresentationBuilder;
 import com.nhlstenden.jabberpoint.slide.Slide;
 import com.nhlstenden.jabberpoint.slide.SlideItem;
@@ -51,17 +52,23 @@ public class XMLAccessor extends Accessor {
     protected static final String UNKNOWNTYPE = "Unknown Element type";
     protected static final String NFE = "Number Format Exception";
 
-    protected static final DefaultSlideItemFactory defaultSlideItemFactory = new DefaultSlideItemFactory();
-    protected static final DefaultWriterFactory defaultWriterFactory = new DefaultWriterFactory();
+    protected DefaultSlideItemFactory slideItemFactory;
+    protected DefaultWriterFactory writerFactory;
 
     protected XMLPresentationBuilder xmlPresentationBuilder;
+
+    public XMLAccessor()
+    {
+        this.slideItemFactory = new DefaultSlideItemFactory();
+        this.writerFactory = new DefaultWriterFactory();
+    }
 
     private String getTitle(Element element, String tagName) {
     	NodeList titles = element.getElementsByTagName(tagName);
     	return titles.item(0).getTextContent();
     }
 
-	public void loadFile(Presentation presentation, String filename) {
+    public void loadFile(Presentation presentation, String filename) {
 		try {
             Element documentAsElement = getDocumentAsElement(filename);
 
@@ -78,7 +85,7 @@ public class XMLAccessor extends Accessor {
 				NodeList slideItems = xmlSlide.getElementsByTagName(ITEM);
 				for (int itemNumber = 0; itemNumber < slideItems.getLength(); itemNumber++) {
 					Element item = (Element) slideItems.item(itemNumber);
-					loadSlideItem(presentationBuilder.getCurrentSlide(), item);
+					this.loadSlideItem(presentationBuilder, item);
 				}
 
                 presentationBuilder.setSlideFinish();
@@ -88,7 +95,7 @@ public class XMLAccessor extends Accessor {
         }
     }
 
-	protected void loadSlideItem(Slide slide, Element item) {
+	protected void loadSlideItem(PresentationBuilder builder, Element item) {
 		int level = 1; // default
 		String levelText = item.getAttributes().getNamedItem(LEVEL).getTextContent();
 
@@ -100,13 +107,17 @@ public class XMLAccessor extends Accessor {
 				System.err.println(NFE);
 			}
 		}
-        slide.append(defaultSlideItemFactory.createSlideItem(item, level));
+		SlideItem slideItem = slideItemFactory.createSlideItem(item, level);
+
+		if (slideItem != null) {
+			builder.addSlideItem(slideItem);
+		}
 	}
 
 	public void saveFile(Presentation presentation, String filename) {
         File fileToSavePath = getFileToSave(filename);
 
-        this.xmlPresentationBuilder = new XMLPresentationBuilder(presentation);
+        this.xmlPresentationBuilder = new XMLPresentationBuilder(presentation, writerFactory);
         this.xmlPresentationBuilder.setPresentationStart();
         this.xmlPresentationBuilder.setPresentationTitle(presentation.getTitle());
 
@@ -120,8 +131,7 @@ public class XMLAccessor extends Accessor {
 
 			for (int itemNumber = 0; itemNumber<slideItems.size(); itemNumber++) {
 				SlideItem slideItem = (SlideItem) slideItems.elementAt(itemNumber);
-                xmlPresentationBuilder.setSlideElement(defaultWriterFactory.getSlideItemToWrite(slideItem,
-                        slideItem.getLevel()));
+                xmlPresentationBuilder.addSlideItem(slideItem);
 			}
             xmlPresentationBuilder.setSlideFinish();
 		}

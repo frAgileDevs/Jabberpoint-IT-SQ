@@ -3,6 +3,7 @@ package com.nhlstenden.jabberpoint.builder;
 import com.nhlstenden.jabberpoint.BitmapItem;
 import com.nhlstenden.jabberpoint.Presentation;
 import com.nhlstenden.jabberpoint.slide.Slide;
+import com.nhlstenden.jabberpoint.slide.SlideItem;
 
 public class DefaultPresentationBuilder extends PresentationBuilder
 {
@@ -37,18 +38,23 @@ public class DefaultPresentationBuilder extends PresentationBuilder
         this.currentSlide = null;
     }
 
-    @Override
     public void setBitmapItem(int level, String imageUrl)
     {
         ensureCurrentSlide();
         currentSlide.append(new BitmapItem(level, imageUrl));
     }
 
-    @Override
     public void setTextItem(int level, String text)
     {
         ensureCurrentSlide();
         currentSlide.append(level, text);
+    }
+
+    @Override
+    public void addSlideItem(SlideItem item)
+    {
+        ensureCurrentSlide();
+        currentSlide.append(item);
     }
 
     public Slide getCurrentSlide()

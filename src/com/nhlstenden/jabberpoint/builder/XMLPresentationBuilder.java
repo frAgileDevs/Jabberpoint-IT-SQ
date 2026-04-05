@@ -1,6 +1,8 @@
 package com.nhlstenden.jabberpoint.builder;
 
 import com.nhlstenden.jabberpoint.Presentation;
+import com.nhlstenden.jabberpoint.factory.WriterFactory;
+import com.nhlstenden.jabberpoint.slide.SlideItem;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,15 +15,18 @@ public class XMLPresentationBuilder extends PresentationBuilder
             "<!DOCTYPE presentation SYSTEM \"jabberpoint.dtd\">"
     };
     List<String> headerList = new ArrayList<>(Arrays.asList(headers));
+    private final WriterFactory writerFactory;
 
-    public XMLPresentationBuilder(Presentation presentation)
+    public XMLPresentationBuilder(Presentation presentation, WriterFactory writerFactory)
     {
         super(presentation);
+        this.writerFactory = writerFactory;
     }
 
     @Override
     public void setPresentationTitle(String title)
     {
+        super.setPresentationTitle(title);
         this.headerList.add(String.format("<showtitle>%s</showtitle>",title));
     }
 
@@ -44,15 +49,21 @@ public class XMLPresentationBuilder extends PresentationBuilder
     }
 
     @Override
-    public void setBitmapItem(int level, String text)
+    public void setBitmapItem(int level, String name)
     {
-
+        this.headerList.add(String.format("<item kind=\"image\" level=\"%d\">%s</item>", level, name));
     }
 
     @Override
-    public void setTextItem(int level, String imageUrl)
+    public void setTextItem(int level, String text)
     {
+        this.headerList.add(String.format("<item kind=\"text\" level=\"%d\">%s</item>", level, text));
+    }
 
+    @Override
+    public void addSlideItem(SlideItem item)
+    {
+        this.headerList.add(writerFactory.getSlideItemToWrite(item, item.getLevel()));
     }
 
     public void setPresentationStart()
