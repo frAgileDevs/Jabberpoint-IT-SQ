@@ -1,3 +1,10 @@
+package com.nhlstenden.jabberpoint;
+import com.nhlstenden.jabberpoint.builder.DefaultPresentationBuilder;
+import com.nhlstenden.jabberpoint.builder.XMLPresentationBuilder;
+import com.nhlstenden.jabberpoint.slide.Slide;
+import com.nhlstenden.jabberpoint.slide.SlideItem;
+import com.nhlstenden.jabberpoint.factory.*;
+
 import java.util.Vector;
 import java.io.File;
 import java.io.IOException;
@@ -11,7 +18,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 
 
@@ -26,10 +32,10 @@ import org.w3c.dom.NodeList;
  */
 
 public class XMLAccessor extends Accessor {
-	
+
     /** Default API to use. */
     protected static final String DEFAULT_API_TO_USE = "dom";
-    
+
     /** names of xml tags or attributes */
     protected static final String SHOWTITLE = "showtitle";
     protected static final String SLIDETITLE = "title";
@@ -39,114 +45,126 @@ public class XMLAccessor extends Accessor {
     protected static final String KIND = "kind";
     protected static final String TEXT = "text";
     protected static final String IMAGE = "image";
-    
+
     /** text of messages */
     protected static final String PCE = "Parser Configuration Exception";
     protected static final String UNKNOWNTYPE = "Unknown Element type";
     protected static final String NFE = "Number Format Exception";
-    
-    
+
+    protected static final DefaultSlideItemFactory defaultSlideItemFactory = new DefaultSlideItemFactory();
+    protected static final DefaultWriterFactory defaultWriterFactory = new DefaultWriterFactory();
+
+    protected XMLPresentationBuilder xmlPresentationBuilder;
+
     private String getTitle(Element element, String tagName) {
     	NodeList titles = element.getElementsByTagName(tagName);
     	return titles.item(0).getTextContent();
-    	
     }
 
-	public void loadFile(Presentation presentation, String filename) throws IOException {
-		int slideNumber, itemNumber, max = 0, maxItems = 0;
+	public void loadFile(Presentation presentation, String filename) {
 		try {
-			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();    
-			Document document = builder.parse(new File(filename)); // Create a JDOM document
-			Element doc = document.getDocumentElement();
-			presentation.setTitle(getTitle(doc, SHOWTITLE));
+            Element documentAsElement = getDocumentAsElement(filename);
 
-			NodeList slides = doc.getElementsByTagName(SLIDE);
-			max = slides.getLength();
-			for (slideNumber = 0; slideNumber < max; slideNumber++) {
+            DefaultPresentationBuilder presentationBuilder = new DefaultPresentationBuilder(presentation);
+            presentationBuilder.setPresentationTitle(getTitle(documentAsElement,SHOWTITLE));
+
+			NodeList slides = documentAsElement.getElementsByTagName(SLIDE);
+			for (int slideNumber = 0; slideNumber < slides.getLength(); slideNumber++) {
 				Element xmlSlide = (Element) slides.item(slideNumber);
-				Slide slide = new Slide();
-				slide.setTitle(getTitle(xmlSlide, SLIDETITLE));
-				presentation.append(slide);
-				
+
+                presentationBuilder.setSlideStart();
+                presentationBuilder.setSlideTitle(this.getTitle(xmlSlide, SLIDETITLE));
+
 				NodeList slideItems = xmlSlide.getElementsByTagName(ITEM);
-				maxItems = slideItems.getLength();
-				for (itemNumber = 0; itemNumber < maxItems; itemNumber++) {
+				for (int itemNumber = 0; itemNumber < slideItems.getLength(); itemNumber++) {
 					Element item = (Element) slideItems.item(itemNumber);
-					loadSlideItem(slide, item);
+					loadSlideItem(presentationBuilder.getCurrentSlide(), item);
 				}
+
+                presentationBuilder.setSlideFinish();
 			}
-		} 
-		catch (IOException iox) {
-			System.err.println(iox.toString());
-		}
-		catch (SAXException sax) {
-			System.err.println(sax.getMessage());
-		}
-		catch (ParserConfigurationException pcx) {
-			System.err.println(PCE);
-		}	
-	}
+		} catch (IOException | SAXException | ParserConfigurationException e) {
+            System.err.println(e.getMessage());
+        }
+    }
 
 	protected void loadSlideItem(Slide slide, Element item) {
 		int level = 1; // default
-		NamedNodeMap attributes = item.getAttributes();
-		String leveltext = attributes.getNamedItem(LEVEL).getTextContent();
-		if (leveltext != null) {
+		String levelText = item.getAttributes().getNamedItem(LEVEL).getTextContent();
+
+		if (levelText != null) {
 			try {
-				level = Integer.parseInt(leveltext);
+				level = Integer.parseInt(levelText);
 			}
 			catch(NumberFormatException x) {
 				System.err.println(NFE);
 			}
 		}
-		String type = attributes.getNamedItem(KIND).getTextContent();
-		if (TEXT.equals(type)) {
-			slide.append(new TextItem(level, item.getTextContent()));
-		}
-		else {
-			if (IMAGE.equals(type)) {
-				slide.append(new BitmapItem(level, item.getTextContent()));
-			}
-			else {
-				System.err.println(UNKNOWNTYPE);
-			}
-		}
+        slide.append(defaultSlideItemFactory.createSlideItem(item, level));
 	}
 
-	public void saveFile(Presentation presentation, String filename) throws IOException {
-		PrintWriter out = new PrintWriter(new FileWriter(filename));
-		out.println("<?xml version=\"1.0\"?>");
-		out.println("<!DOCTYPE presentation SYSTEM \"jabberpoint.dtd\">");
-		out.println("<presentation>");
-		out.print("<showtitle>");
-		out.print(presentation.getTitle());
-		out.println("</showtitle>");
+	public void saveFile(Presentation presentation, String filename) {
+        File fileToSavePath = getFileToSave(filename);
+
+        this.xmlPresentationBuilder = new XMLPresentationBuilder(presentation);
+        this.xmlPresentationBuilder.setPresentationStart();
+        this.xmlPresentationBuilder.setPresentationTitle(presentation.getTitle());
+
 		for (int slideNumber=0; slideNumber<presentation.getSize(); slideNumber++) {
 			Slide slide = presentation.getSlide(slideNumber);
-			out.println("<slide>");
-			out.println("<title>" + slide.getTitle() + "</title>");
+
+            this.xmlPresentationBuilder.setSlideStart();
+            this.xmlPresentationBuilder.setSlideTitle(slide.getTitle());
+
 			Vector<SlideItem> slideItems = slide.getSlideItems();
+
 			for (int itemNumber = 0; itemNumber<slideItems.size(); itemNumber++) {
 				SlideItem slideItem = (SlideItem) slideItems.elementAt(itemNumber);
-				out.print("<item kind="); 
-				if (slideItem instanceof TextItem) {
-					out.print("\"text\" level=\"" + slideItem.getLevel() + "\">");
-					out.print( ( (TextItem) slideItem).getText());
-				}
-				else {
-					if (slideItem instanceof BitmapItem) {
-						out.print("\"image\" level=\"" + slideItem.getLevel() + "\">");
-						out.print( ( (BitmapItem) slideItem).getName());
-					}
-					else {
-						System.out.println("Ignoring " + slideItem);
-					}
-				}
-				out.println("</item>");
+                xmlPresentationBuilder.setSlideElement(defaultWriterFactory.getSlideItemToWrite(slideItem,
+                        slideItem.getLevel()));
 			}
-			out.println("</slide>");
+            xmlPresentationBuilder.setSlideFinish();
 		}
-		out.println("</presentation>");
-		out.close();
+        xmlPresentationBuilder.setPresentationEnd();
+        printNewPresentation(fileToSavePath);
 	}
+
+    public Element getDocumentAsElement(String filename) throws ParserConfigurationException, IOException, SAXException
+    {
+        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Document document = builder.parse(new File(filename));
+
+        return document.getDocumentElement();
+    }
+
+    public File getFileToSave(String filename)
+    {
+        File defaultFolder = new File("resources");
+        this.checkIfFolderExists(defaultFolder);
+
+        return new File(defaultFolder, filename);
+    }
+
+    public void checkIfFolderExists(File folder)
+    {
+        if(!folder.exists())
+        {
+            boolean created = folder.mkdirs();
+            if (!created) {
+                throw new RuntimeException("Failed to create directory: ");
+            }
+        }
+    }
+
+    public void printNewPresentation(File fileToSavePath)
+    {
+        try {
+            PrintWriter printer = new PrintWriter(new FileWriter(fileToSavePath));
+            printer.print(this.xmlPresentationBuilder.build());
+            printer.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

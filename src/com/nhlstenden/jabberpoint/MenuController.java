@@ -1,3 +1,7 @@
+package com.nhlstenden.jabberpoint;
+
+import com.nhlstenden.jabberpoint.slide.utility.AboutBox;
+
 import java.awt.MenuBar;
 import java.awt.Frame;
 import java.awt.Menu;

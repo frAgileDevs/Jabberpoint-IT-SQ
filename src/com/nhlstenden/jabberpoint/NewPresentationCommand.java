@@ -1,3 +1,5 @@
+package com.nhlstenden.jabberpoint;
+
 import java.awt.Frame;
 
 // <p>Command to create a new (empty) presentation.</p>

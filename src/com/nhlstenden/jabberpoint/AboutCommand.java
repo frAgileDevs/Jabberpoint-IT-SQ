@@ -1,3 +1,7 @@
+package com.nhlstenden.jabberpoint;
+
+import com.nhlstenden.jabberpoint.slide.utility.AboutBox;
+
 import java.awt.Frame;
 
 // <p>Command to show the About dialog.</p>

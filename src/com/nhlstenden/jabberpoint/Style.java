@@ -1,3 +1,5 @@
+package com.nhlstenden.jabberpoint;
+
 import java.awt.Color;
 import java.awt.Font;
 
@@ -18,14 +20,14 @@ public class Style {
 	private static Style[] styles; // the styles
 	
 	private static final String FONTNAME = "Helvetica";
-	int indent;
-	Color color;
-	Font font;
-	int fontSize;
-	int leading;
+	protected int indent;
+	protected Color color;
+    protected Font font;
+    protected int fontSize;
+    protected int leading;
 
 	public static void createStyles() {
-		styles = new Style[5];    
+		styles = new Style[5];
 		// The styles are fixed.
 		styles[0] = new Style(0, Color.red,   48, 20);	// style for item-level 0
 		styles[1] = new Style(20, Color.blue,  40, 10);	// style for item-level 1

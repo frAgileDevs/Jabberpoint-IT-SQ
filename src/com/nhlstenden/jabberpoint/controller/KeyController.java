@@ -1,3 +1,11 @@
+package com.nhlstenden.jabberpoint.controller;
+
+import com.nhlstenden.jabberpoint.Command;
+import com.nhlstenden.jabberpoint.ExitCommand;
+import com.nhlstenden.jabberpoint.NextSlideCommand;
+import com.nhlstenden.jabberpoint.Presentation;
+import com.nhlstenden.jabberpoint.PrevSlideCommand;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyAdapter;
 
