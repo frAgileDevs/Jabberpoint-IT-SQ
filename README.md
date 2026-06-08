@@ -17,11 +17,27 @@ A Java-based presentation tool. Part of a refactoring/maintaining exercise at NH
 
 ### MVC
 
-| Layer      | Classes                                       |
-|------------|-----------------------------------------------|
-| Model      | `Presentation`, `Slide`, `SlideItem` subtypes |
-| View       | `SlideViewerFrame`, `SlideViewerComponent`    |
-| Controller | `MenuController`, `KeyController`             |
+| Layer      | Classes                                                          |
+|------------|------------------------------------------------------------------|
+| Model      | `Presentation`, `Slide`, `SlideItem` subtypes (data only)        |
+| View       | `SlideViewerFrame`, `SlideViewerComponent`, `SlideItemRenderer`s |
+| Controller | `MenuController`, `KeyController`                                 |
+
+### Single Responsibility: data vs. drawing
+
+A `SlideItem` (`TextItem`, `BitmapItem`) only holds its **data**. Turning that
+data into pixels is the job of a matching `SlideItemRenderer`
+(`TextItemRenderer`, `BitmapItemRenderer`), looked up through
+`DefaultSlideItemRendererFactory`. This keeps each item responsible for one
+thing only, and makes the drawing logic independently testable.
+
+### Interface Segregation: loading vs. saving
+
+Reading and writing presentations are split into two interfaces:
+`PresentationLoader` (`loadFile`) and `PresentationWriter` (`saveFile`).
+`XMLAccessor` implements both; the read-only `DemoPresentation` implements only
+`PresentationLoader`, so no implementation is ever forced to provide an
+operation it cannot honour (Liskov-substitutable).
 
 ### Command Pattern
 
@@ -38,7 +54,7 @@ Available commands: `NextSlideCommand`, `PrevSlideCommand`, `GoToSlideCommand`, 
 
 ### Factory Method Pattern
 
-`DefaultSlideItemFactory` and `DefaultWriterFactory` centralise creation logic for `SlideItem` types. Each maintains an internal registry, so new item types can be added without modifying `XMLAccessor` or any existing class — see [Extending the Application](#extending-the-application).
+`DefaultSlideItemFactory`, `DefaultWriterFactory`, and `DefaultSlideItemRendererFactory` centralise the creation, serialisation, and rendering lookups for `SlideItem` types. Each maintains an internal registry, so new item types can be added without modifying `XMLAccessor` or any existing class — see [Extending the Application](#extending-the-application).
 
 ---
 
@@ -54,6 +70,14 @@ Available commands: `NextSlideCommand`, `PrevSlideCommand`, `GoToSlideCommand`, 
 ```bash
 mvn compile
 ```
+
+### Test
+
+```bash
+mvn test
+```
+
+The full JUnit 5 suite runs automatically on every pull request and push (see `.github/workflows/build-and-test.yml`). Because some tests construct Swing/AWT components, the CI runs them under `Xvfb`.
 
 ### Run
 
@@ -79,8 +103,14 @@ java -cp target/classes com.nhlstenden.jabberpoint.JabberPoint test.xml
 
 ### Adding a new SlideItem type
 
-1. Create a class that extends `SlideItem` and implement `getBoundingBox()` and `draw()`.
-2. Register it with `DefaultSlideItemFactory` so the XML loader can instantiate it by `kind` name:
+1. Create a class that extends `SlideItem` holding only the item's **data** (no drawing code).
+2. Create a renderer that implements `SlideItemRenderer` (`getBoundingBox()` + `draw()`) and register it with `DefaultSlideItemRendererFactory`:
+
+```java
+rendererFactory.registerRenderer(VideoItem.class, new VideoItemRenderer());
+```
+
+3. Register it with `DefaultSlideItemFactory` so the XML loader can instantiate it by `kind` name:
 
 ```java
 slideItemFactory.registerItem("video", (level, content) -> new VideoItem(level, content));

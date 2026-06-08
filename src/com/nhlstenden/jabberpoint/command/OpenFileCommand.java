@@ -1,7 +1,7 @@
 package com.nhlstenden.jabberpoint.command;
 
 import com.nhlstenden.jabberpoint.Presentation;
-import com.nhlstenden.jabberpoint.accessor.Accessor;
+import com.nhlstenden.jabberpoint.accessor.PresentationLoader;
 import com.nhlstenden.jabberpoint.accessor.XMLAccessor;
 
 import java.awt.Frame;
@@ -25,7 +25,7 @@ public class OpenFileCommand implements Command {
 
 	public void execute() {
 		presentation.clear();
-		Accessor xmlAccessor = new XMLAccessor();
+		PresentationLoader xmlAccessor = new XMLAccessor();
 		try {
 			xmlAccessor.loadFile(presentation, TESTFILE);
 			presentation.setSlideNumber(0);

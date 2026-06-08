@@ -1,21 +1,14 @@
 package com.nhlstenden.jabberpoint.slide;
 
-import com.nhlstenden.jabberpoint.slide.utility.Style;
-
-import java.awt.Rectangle;
-import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
 import java.io.File;
+import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import java.io.IOException;
-
-
-
-/** <p>The class for a Bitmap item</p>
- * <p>Bitmap items have the responsibility to draw themselves.</p>
+/** <p>The class for a Bitmap item.</p>
+ * <p>A BitmapItem only holds the image data. Drawing it is delegated to
+ * {@link com.nhlstenden.jabberpoint.slide.renderer.BitmapItemRenderer}.</p>
  * @author Ian F. Darwin, ian@darwinsys.com, Gert Florijn, Sylvia Stuurman
  * @version 1.1 2002/12/17 Gert Florijn
  * @version 1.2 2003/11/19 Sylvia Stuurman
@@ -28,7 +21,7 @@ import java.io.IOException;
 public class BitmapItem extends SlideItem {
   private BufferedImage bufferedImage;
   private String imageName;
-  
+
   protected static final String FILE = "File ";
   protected static final String NOTFOUND = " not found";
 
@@ -54,20 +47,9 @@ public class BitmapItem extends SlideItem {
 		return imageName;
 	}
 
-// give the  bounding box of the image
-	public Rectangle getBoundingBox(Graphics g, ImageObserver observer, float scale, Style myStyle) {
-		return new Rectangle((int) (myStyle.indent * scale), 0,
-				(int) (bufferedImage.getWidth(observer) * scale),
-				((int) (myStyle.leading * scale)) + 
-				(int) (bufferedImage.getHeight(observer) * scale));
-	}
-
-// draw the image
-	public void draw(int x, int y, float scale, Graphics g, Style myStyle, ImageObserver observer) {
-		int width = x + (int) (myStyle.indent * scale);
-		int height = y + (int) (myStyle.leading * scale);
-		g.drawImage(bufferedImage, width, height,(int) (bufferedImage.getWidth(observer)*scale),
-                (int) (bufferedImage.getHeight(observer)*scale), observer);
+// give the decoded image data
+	public BufferedImage getBufferedImage() {
+		return bufferedImage;
 	}
 
 	public String toString() {

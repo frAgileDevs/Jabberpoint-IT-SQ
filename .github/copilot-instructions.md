@@ -16,10 +16,11 @@ This is **Jabberpoint**, a Java-based presentation software similar to PowerPoin
 - MVC-style pattern (Controllers, Views, Models)
 - `Presentation` - manages slides and navigation
 - `Slide` - contains slide items
-- `SlideItem` (abstract) → `TextItem`, `BitmapItem`
+- `SlideItem` (abstract, data only) → `TextItem`, `BitmapItem`
+- Rendering: `SlideItemRenderer` → `TextItemRenderer`, `BitmapItemRenderer` (drawing kept separate from item data)
 - Controllers: `MenuController`, `KeyController`
 - Views: `SlideViewerFrame`, `SlideViewerComponent`
-- Accessors: `XMLAccessor`, `DemoPresentation`
+- Accessors: `PresentationLoader` / `PresentationWriter` interfaces — `XMLAccessor` implements both, `DemoPresentation` implements the loader only
 
 ## Code Style & Conventions
 
@@ -36,7 +37,7 @@ This is **Jabberpoint**, a Java-based presentation software similar to PowerPoin
 - Some classes use `Vector<T>` instead of `ArrayList<T>` - **keep this for consistency** in existing code
 - Protected static final constants for error messages and file paths
 - Inline variable declarations in loops (old Java style)
-- Abstract factory pattern for Accessors (`Accessor.getDemoAccessor()`)
+- Segregated accessor interfaces: `PresentationLoader` and `PresentationWriter` (no class is forced to implement an operation it cannot support)
 
 ### Comment Style
 
@@ -76,20 +77,19 @@ dump.xml           # Runtime-generated save file (gitignored)
 ### CI/CD Pipeline
 
 - GitHub Actions workflow: `.github/workflows/build-and-test.yml`
-- Triggers on PRs to `develop` and `production`
-- Runs: compilation check, smoke tests (demo mode, XML loading)
-- Uses Java 25 with Temurin distribution
-- **No unit tests yet** - smoke testing only
+- Triggers on PRs and pushes to `develop` and `production`
+- Runs: `mvn verify` — the full JUnit 5 test suite plus JaCoCo coverage
+- GUI tests construct Swing/AWT components, so the suite runs under `Xvfb`
+- Uses Java 21 with Temurin distribution
 
 ## When Adding New Features
 
 ### Creating New SlideItem Types
 
-1. Extend `SlideItem` abstract class
-2. Implement `getBoundingBox()` and `draw()` methods
-3. Add XML loading logic to `XMLAccessor.loadSlideItem()`
-4. Add XML saving logic to `XMLAccessor.saveFile()`
-5. Define constants for XML tag names
+1. Extend `SlideItem` with a class that holds only the item's data
+2. Implement a `SlideItemRenderer` for it and register it with `DefaultSlideItemRendererFactory`
+3. Register creation with `DefaultSlideItemFactory` (XML loading by `kind`)
+4. Register serialisation with `DefaultWriterFactory` (XML saving)
 
 ### Adding New Menu Items
 
