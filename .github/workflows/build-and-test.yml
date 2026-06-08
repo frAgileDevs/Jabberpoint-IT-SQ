@@ -7,7 +7,9 @@ on:
     branches: [ develop, production ]
 
 jobs:
-  build-and-test:
+  # NOTE: keep this job id as "build" — the repository rulesets on develop and
+  # production require a status check named exactly "build".
+  build:
     runs-on: ubuntu-latest
 
     steps:
