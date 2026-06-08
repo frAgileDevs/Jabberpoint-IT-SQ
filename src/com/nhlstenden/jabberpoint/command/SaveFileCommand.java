@@ -1,7 +1,7 @@
 package com.nhlstenden.jabberpoint.command;
 
 import com.nhlstenden.jabberpoint.Presentation;
-import com.nhlstenden.jabberpoint.accessor.Accessor;
+import com.nhlstenden.jabberpoint.accessor.PresentationWriter;
 import com.nhlstenden.jabberpoint.accessor.XMLAccessor;
 
 import java.awt.Frame;
@@ -24,7 +24,7 @@ public class SaveFileCommand implements Command {
 	}
 
 	public void execute() {
-		Accessor xmlAccessor = new XMLAccessor();
+		PresentationWriter xmlAccessor = new XMLAccessor();
 		try {
 			xmlAccessor.saveFile(presentation, SAVEFILE);
 		} catch (IOException exc) {

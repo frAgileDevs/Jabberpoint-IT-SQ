@@ -1,6 +1,7 @@
 package com.nhlstenden.jabberpoint;
 
-import com.nhlstenden.jabberpoint.accessor.Accessor;
+import com.nhlstenden.jabberpoint.accessor.DemoPresentation;
+import com.nhlstenden.jabberpoint.accessor.PresentationLoader;
 import com.nhlstenden.jabberpoint.accessor.XMLAccessor;
 import com.nhlstenden.jabberpoint.slide.SlideViewerFrame;
 import com.nhlstenden.jabberpoint.slide.utility.Style;
@@ -35,11 +36,16 @@ public class JabberPoint {
 		Presentation presentation = new Presentation();
 		new SlideViewerFrame(JABVERSION, presentation);
 		try {
+			PresentationLoader loader;
+			String source;
 			if (argv.length == 0) { // a demo presentation
-				Accessor.getDemoAccessor().loadFile(presentation, "");
+				loader = new DemoPresentation();
+				source = "";
 			} else {
-				new XMLAccessor().loadFile(presentation, argv[0]);
+				loader = new XMLAccessor();
+				source = argv[0];
 			}
+			loader.loadFile(presentation, source);
 			presentation.setSlideNumber(0);
 		} catch (IOException ex) {
 			JOptionPane.showMessageDialog(null,

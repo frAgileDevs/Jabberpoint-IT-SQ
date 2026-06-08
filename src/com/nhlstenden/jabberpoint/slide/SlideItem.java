@@ -1,13 +1,10 @@
 package com.nhlstenden.jabberpoint.slide;
 
-import com.nhlstenden.jabberpoint.slide.utility.Style;
-
-import java.awt.Rectangle;
-import java.awt.Graphics;
-import java.awt.image.ImageObserver;
-
-/** <p>The abstract class for an item on a slide<p>
- * <p>All SlideItems have drawingfunctionality.</p>
+/** <p>The abstract base class for an item on a slide.</p>
+ * <p>A SlideItem only holds the <em>data</em> of the item (such as its level).
+ * Drawing that data is the responsibility of a
+ * {@link com.nhlstenden.jabberpoint.slide.renderer.SlideItemRenderer},
+ * so that data and presentation stay separate responsibilities.</p>
  * @author Ian F. Darwin, ian@darwinsys.com, Gert Florijn, Sylvia Stuurman
  * @version 1.1 2002/12/17 Gert Florijn
  * @version 1.2 2003/11/19 Sylvia Stuurman
@@ -32,12 +29,4 @@ public abstract class SlideItem {
 	public int getLevel() {
 		return level;
 	}
-
-// Give the bounding box
-	public abstract Rectangle getBoundingBox(Graphics g, 
-			ImageObserver observer, float scale, Style style);
-
-// Draw the item
-	public abstract void draw(int x, int y, float scale,
-			Graphics g, Style style, ImageObserver observer);
 }

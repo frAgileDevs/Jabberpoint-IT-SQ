@@ -31,7 +31,7 @@ import org.w3c.dom.NodeList;
  * @version 1.6 2014/05/16 Sylvia Stuurman
  */
 
-public class XMLAccessor extends Accessor {
+public class XMLAccessor implements PresentationLoader, PresentationWriter {
 
     /**
      * Default API to use.

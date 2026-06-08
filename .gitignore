@@ -6,8 +6,13 @@
 *.class
 bin/
 
+# Maven build output
+target/
+
 # Runtime generated files
 dump.xml
+# Folder XMLAccessor writes saved presentations into (also used by tests)
+resources/
 
 # Build artifacts
 sources.txt

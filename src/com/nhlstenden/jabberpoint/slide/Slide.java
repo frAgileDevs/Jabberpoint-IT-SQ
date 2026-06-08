@@ -1,5 +1,8 @@
 package com.nhlstenden.jabberpoint.slide;
 
+import com.nhlstenden.jabberpoint.slide.renderer.DefaultSlideItemRendererFactory;
+import com.nhlstenden.jabberpoint.slide.renderer.SlideItemRenderer;
+import com.nhlstenden.jabberpoint.slide.renderer.SlideItemRendererFactory;
 import com.nhlstenden.jabberpoint.slide.utility.Style;
 
 import java.awt.Graphics;
@@ -22,9 +25,11 @@ public class Slide {
 	public final static int HEIGHT = 800;
 	protected String title; // title is saved separately
 	protected Vector<SlideItem> items; // slide items are saved in a Vector
+	private final SlideItemRendererFactory rendererFactory;
 
 	public Slide() {
 		items = new Vector<SlideItem>();
+		rendererFactory = new DefaultSlideItemRendererFactory();
 	}
 
 	// Add a slide item
@@ -69,13 +74,15 @@ public class Slide {
 	// Title is handled separately
 	    SlideItem slideItem = new TextItem(0, getTitle());
 	    Style style = Style.getStyle(slideItem.getLevel());
-	    slideItem.draw(area.x, y, scale, g, style, view);
-	    y += slideItem.getBoundingBox(g, view, scale, style).height;
+	    SlideItemRenderer renderer = rendererFactory.getRenderer(slideItem);
+	    renderer.draw(slideItem, area.x, y, scale, g, style, view);
+	    y += renderer.getBoundingBox(slideItem, g, view, scale, style).height;
 	    for (int number=0; number<getSize(); number++) {
 	      slideItem = (SlideItem)getSlideItems().elementAt(number);
 	      style = Style.getStyle(slideItem.getLevel());
-	      slideItem.draw(area.x, y, scale, g, style, view);
-	      y += slideItem.getBoundingBox(g, view, scale, style).height;
+	      renderer = rendererFactory.getRenderer(slideItem);
+	      renderer.draw(slideItem, area.x, y, scale, g, style, view);
+	      y += renderer.getBoundingBox(slideItem, g, view, scale, style).height;
 	    }
 	  }
 

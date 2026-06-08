@@ -4,13 +4,17 @@ import com.nhlstenden.jabberpoint.Presentation;
 import com.nhlstenden.jabberpoint.builder.DefaultPresentationBuilder;
 
 /**
- * A built in demo-presentation
+ * A built in demo-presentation.
+ *
+ * <p>The demo can only be loaded, never saved, so it implements
+ * {@link PresentationLoader} only and is therefore fully substitutable for
+ * that type.</p>
  *
  * @author Ian F. Darwin, ian@darwinsys.com, Gert Florijn, Sylvia Stuurman
  * @version 1.6 2014/05/16 Sylvia Stuurman
  */
 
-public class DemoPresentation extends Accessor {
+public class DemoPresentation implements PresentationLoader {
 
     public void loadFile(Presentation presentation, String unusedFilename) {
         DefaultPresentationBuilder builder = new DefaultPresentationBuilder(presentation);
@@ -49,9 +53,5 @@ public class DemoPresentation extends Accessor {
         builder.setTextItem(1, "This is the end of the presentation.");
         builder.setBitmapItem(1, "JabberPoint.gif");
         builder.setSlideFinish();
-    }
-
-    public void saveFile(Presentation presentation, String unusedFilename) {
-        throw new IllegalStateException("This method is not supported");
     }
 }
