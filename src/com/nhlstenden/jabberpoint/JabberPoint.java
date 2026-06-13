@@ -6,9 +6,18 @@ import com.nhlstenden.jabberpoint.accessor.XMLAccessor;
 import com.nhlstenden.jabberpoint.slide.SlideViewerFrame;
 import com.nhlstenden.jabberpoint.slide.utility.Style;
 
+import org.junit.platform.launcher.Launcher;
+import org.junit.platform.launcher.LauncherDiscoveryRequest;
+import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
+import org.junit.platform.launcher.core.LauncherFactory;
+import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
+import org.junit.platform.launcher.listeners.TestExecutionSummary;
+
 import javax.swing.JOptionPane;
 
 import java.io.IOException;
+
+import static org.junit.platform.engine.discovery.DiscoverySelectors.selectPackage;
 
 /** JabberPoint Main Program
  * <p>This program is distributed under the terms of the accompanying
@@ -29,9 +38,34 @@ public class JabberPoint {
 	protected static final String JABERR = "Jabberpoint Error ";
 	protected static final String JABVERSION = "Jabberpoint 1.6 - OU version";
 
+	private static void runTests() {
+		SummaryGeneratingListener listener = new SummaryGeneratingListener();
+		LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request()
+				.selectors(selectPackage("com.nhlstenden.jabberpoint"))
+				.build();
+
+		Launcher launcher = LauncherFactory.create();
+		launcher.execute(request, listener);
+		TestExecutionSummary summary = listener.getSummary();
+		long failed = summary.getTestsFailedCount();
+
+		if (failed > 0) {
+			for (TestExecutionSummary.Failure failure : summary.getFailures()) {
+				String testClassName = failure.getTestIdentifier().getDisplayName();
+				Throwable testException = failure.getException();
+				System.err.println("FAILED: " + testClassName + " - " + testException);
+			}
+			JOptionPane.showMessageDialog(null,
+					failed + " test(s) failed. See console for details.",
+					JABERR, JOptionPane.ERROR_MESSAGE);
+		} else {
+			System.out.println("All " + summary.getTestsSucceededCount() + " tests passed.");
+		}
+	}
+
 	/** The Main Program */
 	public static void main(String argv[]) {
-		
+		runTests();
 		Style.createStyles();
 		Presentation presentation = new Presentation();
 		new SlideViewerFrame(JABVERSION, presentation);
