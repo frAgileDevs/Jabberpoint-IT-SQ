@@ -81,13 +81,27 @@ The full JUnit 5 suite runs automatically on every pull request and push (see `.
 
 ### Run
 
+> **Note:** on startup the application runs the full JUnit suite
+> (`JabberPoint.runTests()`), prints `All 142 tests passed.` to the console, and
+> then opens the window. It therefore needs the compiled **test** classes and
+> JUnit on the classpath. Build with `test-compile` (which compiles the tests
+> into `target/classes`) and add the dependencies to the classpath:
+
 ```bash
+# Compile the app + tests, and capture the dependency classpath
+mvn test-compile
+mvn dependency:build-classpath -Dmdep.outputFile=cp.txt
+
 # Demo mode
-java -cp target/classes com.nhlstenden.jabberpoint.JabberPoint
+java -cp "target/classes:$(cat cp.txt)" com.nhlstenden.jabberpoint.JabberPoint
 
 # With an XML file
-java -cp target/classes com.nhlstenden.jabberpoint.JabberPoint test.xml
+java -cp "target/classes:$(cat cp.txt)" com.nhlstenden.jabberpoint.JabberPoint test.xml
 ```
+
+Running `java -cp target/classes …` on its own will fail, because `main()`
+needs JUnit on the classpath to run the startup tests. (On Windows, use `;`
+instead of `:` as the classpath separator.)
 
 ### Keyboard Shortcuts
 
